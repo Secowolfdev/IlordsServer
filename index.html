@@ -1,0 +1,2954 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="iLords Servers DayZ - Melhor servidor DayZ com pacotes VIP">
+  <meta name="theme-color" content="#ff0000">
+  <title>iLords Servers DayZ</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://i.imgur.com/DMJkLz9.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* LOGIN MODAL */
+        .login-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 4000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-overlay.active {
+            display: flex;
+        }
+
+        .login-container {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            border: 3px solid #ffa500;
+            border-radius: 15px;
+            padding: 50px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 0 50px rgba(255, 165, 0, 0.4);
+        }
+
+        .login-title {
+            color: #ffa500;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .login-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .login-input-group label {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .login-input-group input {
+            padding: 12px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .login-input-group input:focus {
+            outline: none;
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+        }
+
+        .login-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+            font-size: 16px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 165, 0, 0.8);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-error {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 14px;
+            display: none;
+            animation: shake 0.3s ease-in;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .login-divider {
+            margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid #ffa500;
+            text-align: center;
+        }
+
+        .login-divider p {
+            color: #00d4ff;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .key-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            min-height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #ff0000;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+
+        .discord-header-btn {
+            padding: 8px 20px;
+            background: #5865F2;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .discord-header-btn:hover {
+            background: #4752C4;
+            transform: scale(1.05);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-btn {
+            padding: 8px 12px;
+            background: rgba(255, 165, 0, 0.08);
+            border: 1px solid rgba(255, 165, 0, 0.15);
+            color: rgba(255, 165, 0, 0.25);
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 999;
+            opacity: 0.2;
+            backdrop-filter: blur(5px);
+            flex-shrink: 0;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 165, 0, 0.15);
+            border-color: rgba(255, 165, 0, 0.3);
+            color: rgba(255, 165, 0, 0.45);
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+
+        .shop-btn {
+            padding: 8px 20px;
+            background: #ff0000;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .shop-btn:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        .cart-badge {
+            background: #00d4ff;
+            color: #000;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            min-width: 24px;
+        }
+
+        /* ADMIN PANEL */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .admin-panel.active {
+            display: flex;
+        }
+
+        .admin-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            border: 3px solid #ffa500;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ffa500;
+            padding-bottom: 15px;
+        }
+
+        .admin-header h2 {
+            color: #ffa500;
+            font-size: 24px;
+        }
+
+        .admin-header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .admin-user-info {
+            color: #00d4ff;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .logout-btn {
+            background: #ff0000;
+            border: none;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: #cc0000;
+        }
+
+        .close-admin {
+            background: #ffa500;
+            border: none;
+            color: #000;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-admin:hover {
+            background: #ff8c00;
+            transform: scale(1.1);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ffa500;
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab-btn {
+            padding: 10px 20px;
+            background: rgba(255, 165, 0, 0.1);
+            border: 2px solid #ffa500;
+            color: #ffa500;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .admin-tab-btn:hover {
+            background: rgba(255, 165, 0, 0.3);
+        }
+
+        .admin-tab-btn.active {
+            background: #ffa500;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        .image-upload-section {
+            padding: 20px 0;
+        }
+
+        .image-upload-section h3 {
+            color: #ffa500;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .upload-area {
+            background: rgba(255, 165, 0, 0.1);
+            border: 3px dashed #ffa500;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: rgba(255, 165, 0, 0.2);
+            border-color: #ff8c00;
+        }
+
+        .upload-area p {
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .upload-btn {
+            padding: 12px 30px;
+            background: #ffa500;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .upload-btn:hover {
+            background: #ff8c00;
+            transform: scale(1.05);
+        }
+
+        .image-list {
+            margin-top: 30px;
+        }
+
+        .image-list h4 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .vip-preview-grid, .items-preview-grid, .keys-grid, .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .image-item {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .image-item:hover {
+            border-color: #ffa500;
+            transform: translateY(-5px);
+        }
+
+        .preview-item {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            padding: 15px;
+        }
+
+        .preview-item:hover {
+            border-color: #ffa500;
+            transform: translateY(-5px);
+        }
+
+        .image-thumbnail {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .image-info {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .preview-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .image-name {
+            color: #00d4ff;
+            font-size: 12px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .preview-item-name {
+            color: #00d4ff;
+            font-size: 12px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .preview-item-price {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .preview-item-status {
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .preview-item-status.inactive {
+            color: #ff0000;
+        }
+
+        .preview-item-date {
+            color: #aaa;
+            font-size: 11px;
+        }
+
+        .image-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .preview-item-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-btn, .delete-btn, .preview-delete-btn, .toggle-btn {
+            flex: 1;
+            padding: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .copy-btn:hover {
+            background: #00a8cc;
+        }
+
+        .delete-btn {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .delete-btn:hover {
+            background: #cc0000;
+        }
+
+        .preview-delete-btn {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .preview-delete-btn:hover {
+            background: #cc0000;
+        }
+
+        .toggle-btn {
+            background: #ff9500;
+            color: #000;
+        }
+
+        .toggle-btn:hover {
+            background: #ff8c00;
+        }
+
+        .toggle-btn.active {
+            background: #00ff00;
+        }
+
+        .empty-message {
+            color: #aaa;
+            text-align: center;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .empty-preview {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #aaa;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .settings-section {
+            padding: 20px 0;
+        }
+
+        .settings-section h3 {
+            color: #ffa500;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .setting-item {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-item label {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .setting-item input, .setting-item select, .setting-item textarea {
+            padding: 10px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: Arial, sans-serif;
+        }
+
+        .setting-item input:focus, .setting-item select:focus, .setting-item textarea:focus {
+            outline: none;
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.1);
+        }
+
+        .setting-item textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .save-btn {
+            padding: 10px 20px;
+            background: #ffa500;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            width: fit-content;
+        }
+
+        .save-btn:hover {
+            background: #ff8c00;
+            transform: scale(1.05);
+        }
+
+        /* MODAL LOJA */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            padding-top: 80px;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 1400px;
+            width: 100%;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            gap: 30px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff0000;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: #cc0000;
+            transform: scale(1.1);
+        }
+
+        .shop-main {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ff0000;
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .shop-tab-btn {
+            padding: 10px 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .shop-tab-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+
+        .shop-tab-btn.active {
+            background: #ff0000;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+        }
+
+        .shop-tab-content {
+            display: none;
+        }
+
+        .shop-tab-content.active {
+            display: block;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-card:hover {
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 5px;
+            border: 1px solid #00d4ff;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            color: #00d4ff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .product-price {
+            font-size: 20px;
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .product-benefits {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #00d4ff;
+            font-size: 11px;
+            color: #00d4ff;
+            max-height: 180px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .product-benefits ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .product-benefits li {
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .product-benefits li:before {
+            content: "✓";
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .add-to-cart-btn {
+            padding: 8px 15px;
+            background: #00d4ff;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #00a8cc;
+            transform: scale(1.05);
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* CARRINHO */
+        .shop-cart {
+            width: 350px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-title {
+            font-size: 24px;
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            max-height: 300px;
+        }
+
+        .cart-item {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cart-item-image {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 4px;
+            border: 1px solid #00d4ff;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3px;
+        }
+
+        .cart-item-info {
+            font-size: 12px;
+        }
+
+        .cart-item-name {
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .cart-item-price {
+            color: #ff0000;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .qty-btn {
+            background: #ff0000;
+            border: none;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .qty-btn:hover {
+            background: #cc0000;
+        }
+
+        .remove-btn {
+            background: #cc0000;
+            border: none;
+            color: #fff;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #990000;
+        }
+
+        .cart-empty {
+            text-align: center;
+            color: #aaa;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+
+        .steam-id-section {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .steam-id-section label {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .steam-id-section input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .steam-id-section input::placeholder {
+            color: #666;
+        }
+
+        .steam-id-section input:focus {
+            outline: none;
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.1);
+        }
+
+        .steam-id-info {
+            color: #aaa;
+            font-size: 10px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cart-summary {
+            border-top: 2px solid #ff0000;
+            padding-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .checkout-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            width: 100%;
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .clear-cart-btn {
+            padding: 10px 20px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .clear-cart-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+
+        .order-confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .order-confirmation-modal.active {
+            display: flex;
+        }
+
+        .order-confirmation-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .order-confirmation-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .order-confirmation-title {
+            color: #00d4ff;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .order-confirmation-message {
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .order-details {
+            background: rgba(255, 165, 0, 0.1);
+            border: 2px solid #ffa500;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .order-detail-item {
+            color: #00d4ff;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-detail-label {
+            font-weight: bold;
+        }
+
+        .order-detail-value {
+            color: #ffa500;
+            font-weight: bold;
+        }
+
+        .order-detail-steam {
+            color: #00d4ff;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .order-confirmation-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .order-confirmation-buttons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .order-confirm-btn {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #000;
+        }
+
+        .order-confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .order-cancel-btn {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff0000;
+            color: #ff0000;
+        }
+
+        .order-cancel-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #00d4ff;
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            animation: slideInRight 0.3s ease-out;
+            z-index: 2001;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://i.imgur.com/YrPCA4t.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            animation: fadeInScale 1s ease-out;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* SERVERS SECTION */
+        .servers-section-wrapper {
+            position: relative;
+            padding: 50px 20px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .servers-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .servers-title {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 50px;
+            color: #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .server-card {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            position: relative;
+            z-index: 3;
+        }
+
+        .server-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 0, 0, 0.4);
+            border-color: #00d4ff;
+        }
+
+        .server-name {
+            font-size: 28px;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .server-map {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .server-map::before {
+            content: "📍";
+            font-size: 20px;
+        }
+
+        .server-status {
+            display: inline-block;
+            padding: 8px 15px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* EVENTS SECTION */
+        .events-section-wrapper {
+            position: relative;
+            padding: 50px 20px;
+            width: 100%;
+        }
+
+        .events-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .events-title {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 50px;
+            color: #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .event-card {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+            border-color: #00d4ff;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff0000, #00d4ff);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #00d4ff;
+        }
+
+        .event-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .event-title {
+            font-size: 22px;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .event-date {
+            color: #ff0000;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .event-time {
+            color: #ffa500;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .event-description {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .event-reward {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            padding: 12px;
+            margin-top: 15px;
+            color: #00d4ff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .event-participants {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 3px solid #ff0000;
+            margin-top: 50px;
+            width: 100%;
+        }
+
+        .footer-text {
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ff0000;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            .hero {
+                height: 80vh;
+            }
+
+            .events-title {
+                font-size: 32px;
+            }
+
+            .servers-title {
+                font-size: 32px;
+            }
+
+            .servers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .server-card {
+                padding: 20px;
+            }
+
+            .discord-header-btn {
+                padding: 6px 15px;
+                font-size: 12px;
+            }
+
+            .admin-content {
+                max-height: 95vh;
+            }
+
+            .images-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .admin-tabs {
+                gap: 5px;
+            }
+
+            .admin-tab-btn {
+                padding: 8px 12px;
+                font-size: 10px;
+            }
+
+            .login-container {
+                padding: 30px;
+            }
+
+            .keys-grid, .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                flex-direction: column;
+            }
+
+            .shop-cart {
+                width: 100%;
+                position: static;
+                margin-top: 20px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .events-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body><!-- LOGIN MODAL -->
+  <div class="login-overlay" id="loginOverlay">
+   <div class="login-container">
+    <h2 class="login-title">🔐 Admin Login</h2>
+    <form class="login-form" onsubmit="handleLogin(event)">
+     <div class="login-input-group"><label for="loginUsername">Usuário:</label> <input type="text" id="loginUsername" placeholder="Digite seu usuário" required>
+     </div>
+     <div class="login-input-group"><label for="loginPassword">Senha:</label> <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+     </div><button type="submit" class="login-btn">Entrar</button>
+     <div class="login-error" id="loginError"></div>
+    </form>
+    <div class="login-divider">
+     <p>OU FAÇA LOGIN COM CHAVE DE ACESSO</p>
+    </div>
+    <div class="key-section"><input type="text" id="accessKey" placeholder="Cole sua chave de acesso aqui"> <button type="button" class="login-btn" onclick="handleKeyLogin()">🔑 Entrar com Chave</button>
+    </div>
+   </div>
+  </div>
+  <div class="container"><!-- HEADER -->
+   <header><a href="https://discord.gg/adQ3DQmmDU" target="_blank" rel="noopener noreferrer" class="discord-header-btn">Discord</a>
+    <div class="header-right"><button class="admin-btn" id="adminHeaderBtn" onclick="openLoginAdmin()">⚙️ Admin</button> <button class="shop-btn" onclick="openShop()"> 🛒 LOJA <span class="cart-badge" id="cartBadge">0</span> </button>
+    </div>
+   </header><!-- ADMIN PANEL -->
+   <div class="admin-panel" id="adminPanel">
+    <div class="admin-content">
+     <div class="admin-header">
+      <h2>Painel do Administrador</h2>
+      <div class="admin-header-right">
+       <div class="admin-user-info">
+        <div>
+         👤 Logado como: <strong id="adminNameDisplay"></strong>
+        </div>
+       </div><button class="logout-btn" onclick="logout()">🚪 Sair</button> <button class="close-admin" onclick="toggleAdmin()">✕</button>
+      </div>
+     </div>
+     <div class="admin-tabs"><button class="admin-tab-btn active" onclick="switchAdminTab('images', event)">Imagens</button> <button class="admin-tab-btn" onclick="switchAdminTab('vips-mgmt', event)">VIPs</button> <button class="admin-tab-btn" onclick="switchAdminTab('bases-mgmt', event)">Bases</button> <button class="admin-tab-btn" onclick="switchAdminTab('vehicles-mgmt', event)">Veículos</button> <button class="admin-tab-btn" onclick="switchAdminTab('events-mgmt', event)">Eventos</button> <button class="admin-tab-btn" onclick="switchAdminTab('orders', event)">Pedidos</button> <button class="admin-tab-btn" onclick="switchAdminTab('settings', event)">Config</button>
+     </div><!-- Tab Imagens Upload -->
+     <div id="images" class="admin-tab-content active">
+      <div class="image-upload-section">
+       <h3>📤 Upload de Imagens</h3>
+       <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"><input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" hidden> <button class="upload-btn" onclick="document.getElementById('imageInput').click()" type="button"> 📤 Clique para fazer upload </button>
+        <p>ou arraste uma imagem aqui</p>
+       </div>
+       <div class="image-list">
+        <h4>📸 Imagens Salvas</h4>
+        <div class="images-grid" id="imagesGrid">
+         <p class="empty-message">Nenhuma imagem salva ainda</p>
+        </div>
+       </div>
+      </div>
+     </div><!-- Tab VIPs Management -->
+     <div id="vips-mgmt" class="admin-tab-content">
+      <div class="image-upload-section">
+       <h3>🎮 Gerenciar VIPs</h3>
+       <div class="settings-section">
+        <div class="setting-item"><label>Imagem VIP 1:</label> <input type="file" id="vip1Img" accept="image/*"> <button class="save-btn" onclick="saveVipImage(1)" type="button">Salvar VIP 1</button>
+        </div>
+        <div class="setting-item"><label>Imagem VIP 2:</label> <input type="file" id="vip2Img" accept="image/*"> <button class="save-btn" onclick="saveVipImage(2)" type="button">Salvar VIP 2</button>
+        </div>
+        <div class="setting-item"><label>Imagem VIP 3:</label> <input type="file" id="vip3Img" accept="image/*"> <button class="save-btn" onclick="saveVipImage(3)" type="button">Salvar VIP 3</button>
+        </div>
+       </div>
+       <div class="image-list">
+        <h4>🎮 VIPs Salvos</h4>
+        <div class="vip-preview-grid" id="vipPreview"></div>
+       </div>
+      </div>
+     </div><!-- Tab Bases Management -->
+     <div id="bases-mgmt" class="admin-tab-content">
+      <div class="image-upload-section">
+       <h3>🏰 Gerenciar Bases</h3>
+       <div class="settings-section">
+        <div class="setting-item"><label>Nome da Base:</label> <input type="text" id="baseName" placeholder="Ex: Base Pequena 07">
+        </div>
+        <div class="setting-item"><label>Imagem da Base:</label> <input type="file" id="baseImg" accept="image/*">
+        </div>
+        <div class="setting-item"><label>Preço (R$):</label> <input type="number" id="basePrice" placeholder="30.00" step="0.01">
+        </div><button class="save-btn" onclick="addBase()" type="button">Adicionar Base</button>
+       </div>
+       <div class="image-list">
+        <h4>🏰 Bases Salvas</h4>
+        <div class="items-preview-grid" id="basesPreview"></div>
+       </div>
+      </div>
+     </div><!-- Tab Vehicles Management -->
+     <div id="vehicles-mgmt" class="admin-tab-content">
+      <div class="image-upload-section">
+       <h3>🚗 Gerenciar Veículos</h3>
+       <div class="settings-section">
+        <div class="setting-item"><label>Nome do Veículo:</label> <input type="text" id="vehicleName" placeholder="Ex: BMW, Helicóptero R22">
+        </div>
+        <div class="setting-item"><label>Imagem do Veículo:</label> <input type="file" id="vehicleImg" accept="image/*">
+        </div>
+        <div class="setting-item"><label>Preço (R$):</label> <input type="number" id="vehiclePrice" placeholder="50.00" step="0.01">
+        </div>
+        <div class="setting-item"><label>Tipo:</label> <select id="vehicleType"> <option value="car">🚗 Carro</option> <option value="helicopter">🚁 Helicóptero</option> </select>
+        </div><button class="save-btn" onclick="addVehicle()" type="button">Adicionar Veículo</button>
+       </div>
+       <div class="image-list">
+        <h4>🚗 Veículos Salvos</h4>
+        <div class="items-preview-grid" id="vehiclesPreview"></div>
+       </div>
+      </div>
+     </div><!-- Tab Events Management -->
+     <div id="events-mgmt" class="admin-tab-content">
+      <div class="image-upload-section">
+       <h3>📢 Gerenciar Eventos</h3>
+       <div class="settings-section">
+        <div class="setting-item"><label>Título do Evento:</label> <input type="text" id="eventTitle" placeholder="Ex: Campeonato PvP">
+        </div>
+        <div class="setting-item"><label>Data (DD/MM/YYYY):</label> <input type="text" id="eventDate" placeholder="25/12/2025">
+        </div>
+        <div class="setting-item"><label>Horário:</label> <input type="text" id="eventTime" placeholder="20:00">
+        </div>
+        <div class="setting-item"><label>Descrição:</label> <textarea id="eventDescription" placeholder="Descreva o evento..."></textarea>
+        </div>
+        <div class="setting-item"><label>Prêmio/Recompensa:</label> <input type="text" id="eventReward" placeholder="Ex: 5.000.000 Rubles">
+        </div>
+        <div class="setting-item"><label>Ícone (Emoji):</label> <input type="text" id="eventIcon" placeholder="🏆" maxlength="2">
+        </div>
+        <div class="setting-item"><label>Imagem do Evento:</label> <input type="file" id="eventImage" accept="image/*">
+        </div><button class="save-btn" onclick="addEvent()" type="button">Adicionar Evento</button>
+       </div>
+       <div class="image-list">
+        <h4>📢 Eventos Salvos</h4>
+        <div class="events-grid" id="eventsPreview"></div>
+       </div>
+      </div>
+     </div><!-- Tab Pedidos -->
+     <div id="orders" class="admin-tab-content">
+      <div class="image-upload-section">
+       <h3>📦 Histórico de Pedidos</h3><button class="save-btn" onclick="downloadOrdersJSON()" type="button" style="background: #43B581; color: #fff; margin-bottom: 15px;">⬇️ Baixar JSON</button>
+       <div class="image-list">
+        <h4>📋 Pedidos Realizados</h4>
+        <div class="keys-grid" id="ordersPreview"></div>
+       </div>
+      </div>
+     </div><!-- Tab Configurações -->
+     <div id="settings" class="admin-tab-content">
+      <div class="settings-section">
+       <h3>⚙️ Configurações do Site</h3>
+       <div class="setting-item"><label for="siteName">Nome do Site:</label> <input type="text" id="siteName" value="iLords Servers DayZ">
+       </div>
+       <div class="setting-item"><label for="discordLink">Link Discord:</label> <input type="text" id="discordLink" value="https://discord.gg/adQ3DQmmDU">
+       </div>
+      </div>
+      <div class="settings-section">
+       <h3>🤖 Integração Discord Webhook</h3>
+       <div class="setting-item"><label for="webhookUrl">URL do Webhook Discord:</label> <input type="text" id="webhookUrl" placeholder="https://discord.com/api/webhooks/..." value="">
+        <div style="color: #aaa; font-size: 11px; margin-top: 8px;">
+         📌 Cole aqui a URL do seu Webhook Discord para receber pedidos automaticamente
+        </div>
+       </div><button class="save-btn" onclick="saveWebhookUrl()" type="button" style="background: #5865F2; color: #fff; margin-top: 10px;">💾 Salvar Webhook</button> <button class="save-btn" onclick="testWebhook()" type="button" style="background: #43B581; color: #fff; margin-top: 5px;">✅ Testar Webhook</button>
+       <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff; border-radius: 5px; padding: 12px; margin-top: 15px;">
+        <p style="color: #00d4ff; font-size: 11px; margin: 0; line-height: 1.6;">📖 <strong>Como criar um Webhook:</strong><br>
+          1️⃣ Abra seu servidor Discord<br>
+          2️⃣ Clique em configurações do canal<br>
+          3️⃣ Vá em "Integrações" → "Webhooks"<br>
+          4️⃣ Clique em "Novo Webhook"<br>
+          5️⃣ Copie a URL e cole aqui</p>
+       </div>
+      </div>
+      <div class="settings-section">
+       <h3>🔑 Gerenciar Chaves de Acesso</h3>
+       <div class="setting-item"><label>Nome do Admin:</label> <input type="text" id="adminName" placeholder="Ex: João, Maria, etc">
+       </div><button class="save-btn" onclick="generateAccessKey()" type="button" style="background: #00d4ff; color: #000; margin-bottom: 20px;">🔑 Gerar Chave de Acesso</button>
+       <div class="image-list">
+        <h4>🔓 Chaves Ativas</h4>
+        <div class="keys-grid" id="keysPreview"></div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- MODAL LOJA -->
+   <div class="modal-overlay" id="shopModal">
+    <div class="modal-content"><button class="close-modal" onclick="closeShop()">×</button>
+     <div class="shop-main">
+      <div class="shop-tabs"><button class="shop-tab-btn active" onclick="switchShopTab('vips', event)">VIPs</button> <button class="shop-tab-btn" onclick="switchShopTab('bases', event)">Bases</button> <button class="shop-tab-btn" onclick="switchShopTab('veiculos', event)">Veículos</button>
+      </div><!-- VIPs -->
+      <div id="vips" class="shop-tab-content active">
+       <div class="products-grid" id="vipsShop"></div>
+      </div><!-- Bases -->
+      <div id="bases" class="shop-tab-content">
+       <div class="products-grid" id="basesShop"></div>
+      </div><!-- Veículos -->
+      <div id="veiculos" class="shop-tab-content">
+       <div class="products-grid" id="vehiclesShop"></div>
+      </div>
+     </div><!-- CARRINHO -->
+     <div class="shop-cart">
+      <div class="cart-title">
+       🛒 Carrinho
+      </div>
+      <div class="cart-items" id="cartItems">
+       <div class="cart-empty">
+        Carrinho vazio
+       </div>
+      </div>
+      <div class="cart-summary">
+       <div class="steam-id-section"><label for="steamIdInput">🎮 SEU STEAM ID:</label> <input type="text" id="steamIdInput" placeholder="XXXXXXXXXXXXXXXXXX" maxlength="20">
+        <div class="steam-id-info">
+         ℹ️ Necessário para entrega automática
+        </div>
+       </div>
+       <div class="cart-total"><span>Total:</span> <span id="cartTotal">R$ 0,00</span>
+       </div><button class="checkout-btn" id="checkoutBtn" onclick="initiateCheckout()" disabled>Comprar Agora</button> <button class="clear-cart-btn" onclick="clearCart()">Limpar Carrinho</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- MODAL CONFIRMAÇÃO PEDIDO -->
+   <div class="order-confirmation-modal" id="orderConfirmationModal">
+    <div class="order-confirmation-content">
+     <div class="order-confirmation-icon">
+      ✅
+     </div>
+     <div class="order-confirmation-title">
+      Confirmar Pedido
+     </div>
+     <div class="order-confirmation-message">
+      Revise os detalhes do seu pedido antes de confirmar a compra:
+     </div>
+     <div class="order-details">
+      <div class="order-detail-item"><span class="order-detail-label">Steam ID:</span> <span class="order-detail-steam" id="confirmSteamId">-</span>
+      </div>
+      <div class="order-detail-item"><span class="order-detail-label">Itens:</span> <span class="order-detail-value" id="confirmItems">0</span>
+      </div>
+      <div class="order-detail-item"><span class="order-detail-label">Total:</span> <span class="order-detail-value" id="confirmTotal">R$ 0,00</span>
+      </div>
+     </div>
+     <div class="order-confirmation-buttons"><button class="order-confirm-btn" onclick="confirmCheckout()">✅ Confirmar Compra</button> <button class="order-cancel-btn" onclick="cancelCheckout()">✕ Cancelar</button>
+     </div>
+    </div>
+   </div><!-- HERO -->
+   <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+    </div>
+   </section><!-- SERVERS SECTION -->
+   <div class="servers-section-wrapper">
+    <section class="servers-section">
+     <h2 class="servers-title">🖥️ Nossos Servidores</h2>
+     <div class="servers-grid">
+      <div class="server-card">
+       <h3 class="server-name">iLords 3PP Full Mod</h3>
+       <div class="server-map">
+        Mapa Chernarus
+       </div>
+       <div class="server-status">
+        Online
+       </div>
+      </div>
+      <div class="server-card">
+       <h3 class="server-name">iLords Deathmatch</h3>
+       <div class="server-map">
+        Mapa Chernarus
+       </div>
+       <div class="server-status">
+        Online
+       </div>
+      </div>
+      <div class="server-card">
+       <h3 class="server-name">iLords Vanilla Namalsk ++</h3>
+       <div class="server-map">
+        Mapa Namalsk
+       </div>
+       <div class="server-status">
+        Online
+       </div>
+      </div>
+     </div>
+    </section>
+   </div><!-- EVENTS SECTION -->
+   <div class="events-section-wrapper">
+    <section class="events-section">
+     <h2 class="events-title">📢 Eventos</h2>
+     <div class="events-container" id="eventsContainer">
+      <p class="empty-message">Nenhum evento anunciado ainda</p>
+     </div>
+    </section>
+   </div><!-- FOOTER -->
+   <footer>
+    <p class="footer-text">© 2026 iLords Servers DayZ. Todos os direitos reservados.</p>
+    <div class="footer-links"><a href="https://discord.gg/adQ3DQmmDU" target="_blank" rel="noopener noreferrer">Comunidade Discord</a> <a href="#" target="_blank">Suporte</a> <a href="#" target="_blank">Status do Servidor</a>
+    </div>
+   </footer>
+  </div>
+  <script>
+        let cart = [];
+        let uploadedImages = [];
+        let vipImages = {};
+        let basesList = [];
+        let vehiclesList = [];
+        let eventsList = [];
+        let ordersList = [];
+        let isAdminLoggedIn = false;
+        let adminKeys = [];
+        let currentAdminName = '';
+        let pendingCheckoutData = null;
+        let webhookUrl = '';
+
+        // Webhook Functions
+        function saveWebhookUrl() {
+            const url = document.getElementById('webhookUrl').value.trim();
+            if (!url) {
+                showNotification('Digite a URL do Webhook! ⚠️');
+                return;
+            }
+            if (!url.includes('discord.com/api/webhooks')) {
+                showNotification('URL do Webhook inválida! ⚠️');
+                return;
+            }
+            webhookUrl = url;
+            localStorage.setItem('webhookUrl', url);
+            showNotification('Webhook salvo com sucesso! 💾');
+        }
+
+        function testWebhook() {
+            if (!webhookUrl) {
+                showNotification('Configure o Webhook primeiro! ⚠️');
+                return;
+            }
+            const testMessage = {
+                content: '🔔 **TESTE DE WEBHOOK** 🔔',
+                embeds: [{
+                    title: 'Sistema de Loja - Teste de Conexão',
+                    description: 'Se você vê esta mensagem, o webhook está funcionando corretamente!',
+                    color: 3447003,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(testMessage)
+            }).then(() => {
+                showNotification('✅ Webhook testado com sucesso! Mensagem enviada ao Discord!');
+            }).catch(e => {
+                showNotification('❌ Erro ao testar webhook: ' + e.message);
+            });
+        }
+
+        function sendOrderToDiscord(orderData) {
+            if (!webhookUrl) return;
+
+            const itemsList = orderData.items.map(item => `• **${item.name}** (x${item.quantity}) - R$ ${item.price.toFixed(2)}`).join('\n');
+            const embed = {
+                title: '🎮 NOVO PEDIDO RECEBIDO',
+                description: `Um novo cliente fez uma compra!`,
+                color: 16711680,
+                fields: [
+                    {
+                        name: '🎮 Steam ID',
+                        value: `\`${orderData.steamId}\``,
+                        inline: false
+                    },
+                    {
+                        name: '📦 Itens',
+                        value: itemsList,
+                        inline: false
+                    },
+                    {
+                        name: '💰 Total',
+                        value: `R$ ${orderData.total.toFixed(2)}`,
+                        inline: true
+                    },
+                    {
+                        name: '📅 Data/Hora',
+                        value: `${orderData.date} - ${orderData.time}`,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: 'iLords Servers DayZ Store',
+                    icon_url: 'https://imgur.com/DMJkLz9.jpg'
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            const payload = {
+                content: '@here Novo pedido para processar! 🚀',
+                embeds: [embed]
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(e => console.error('Erro ao enviar webhook:', e));
+        }
+
+        function downloadOrdersJSON() {
+            if (ordersList.length === 0) {
+                showNotification('Nenhum pedido para baixar! ⚠️');
+                return;
+            }
+            const dataStr = JSON.stringify(ordersList, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `pedidos-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            window.URL.revokeObjectURL(url);
+            showNotification('Pedidos baixados! ⬇️');
+        }
+
+        // Login System
+        function openLoginAdmin() {
+            if (isAdminLoggedIn) {
+                toggleAdmin();
+            } else {
+                document.getElementById('loginOverlay').classList.add('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (username === 'ilordsservers' && password === 'ilords2026') {
+                isAdminLoggedIn = true;
+                currentAdminName = 'Proprietário';
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminName', 'Proprietário');
+                document.getElementById('loginOverlay').classList.remove('active');
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('accessKey').value = '';
+                errorDiv.classList.remove('show');
+                document.getElementById('adminNameDisplay').textContent = currentAdminName;
+                document.getElementById('adminHeaderBtn').style.display = 'block';
+                toggleAdmin();
+                showNotification('Login bem-sucedido! 🔓');
+                renderAccessKeys();
+                renderOrders();
+            } else {
+                errorDiv.textContent = '❌ Usuário ou senha incorretos!';
+                errorDiv.classList.add('show');
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        function handleKeyLogin() {
+            const key = document.getElementById('accessKey').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (!key || key.trim() === '') {
+                errorDiv.textContent = '❌ Digite uma chave de acesso!';
+                errorDiv.classList.add('show');
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+                return;
+            }
+
+            const foundKey = adminKeys.find(k => k.key === key && k.active);
+            if (foundKey) {
+                isAdminLoggedIn = true;
+                currentAdminName = foundKey.name;
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminName', foundKey.name);
+                document.getElementById('loginOverlay').classList.remove('active');
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('accessKey').value = '';
+                errorDiv.classList.remove('show');
+                document.getElementById('adminNameDisplay').textContent = currentAdminName;
+                document.getElementById('adminHeaderBtn').style.display = 'block';
+                toggleAdmin();
+                showNotification(`Login bem-sucedido! Bem-vindo ${foundKey.name}! 🔓`);
+                renderAccessKeys();
+                renderOrders();
+            } else {
+                errorDiv.textContent = '❌ Chave de acesso inválida ou desativada!';
+                errorDiv.classList.add('show');
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        function generateAccessKey() {
+            const adminName = document.getElementById('adminName').value;
+            if (!adminName || adminName.trim() === '') {
+                showNotification('Digite o nome do admin! ⚠️');
+                return;
+            }
+
+            const key = 'ILORDS-' + Math.random().toString(36).substr(2, 12).toUpperCase();
+            const newKey = {
+                id: Date.now(),
+                name: adminName,
+                key: key,
+                active: true,
+                createdAt: new Date().toLocaleDateString('pt-BR')
+            };
+
+            adminKeys.push(newKey);
+            localStorage.setItem('adminKeys', JSON.stringify(adminKeys));
+            document.getElementById('adminName').value = '';
+            renderAccessKeys();
+            showNotification(`Chave gerada para ${adminName}! 🔑`);
+
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 3px solid #ffa500; border-radius: 10px; padding: 30px; z-index: 5000; max-width: 400px; text-align: center;';
+            modal.innerHTML = `
+                <h3 style="color: #ffa500; margin-bottom: 20px;">✅ Chave Gerada!</h3>
+                <p style="color: #00d4ff; margin-bottom: 10px;">Para: <strong>${adminName}</strong></p>
+                <div style="background: rgba(255, 165, 0, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 20px; word-break: break-all;">
+                    <code style="color: #fff; font-size: 14px; font-weight: bold;">${key}</code>
+                </div>
+                <button onclick="navigator.clipboard.writeText('${key}'); this.textContent = 'Copiado! ✅'; setTimeout(() => this.textContent = 'Copiar Chave', 2000);" style="padding: 10px 20px; background: #00d4ff; border: none; color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; margin-right: 10px;">Copiar Chave</button>
+                <button onclick="this.parentElement.remove();" style="padding: 10px 20px; background: #ff0000; border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer;">Fechar</button>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function toggleKeyStatus(id) {
+            const key = adminKeys.find(k => k.id === id);
+            if (key) {
+                key.active = !key.active;
+                localStorage.setItem('adminKeys', JSON.stringify(adminKeys));
+                renderAccessKeys();
+                showNotification(key.active ? 'Chave ativada! ✅' : 'Chave desativada! ⛔');
+            }
+        }
+
+        function deleteAccessKey(id) {
+            adminKeys = adminKeys.filter(k => k.id !== id);
+            localStorage.setItem('adminKeys', JSON.stringify(adminKeys));
+            renderAccessKeys();
+            showNotification('Chave deletada! 🗑️');
+        }
+
+        function renderAccessKeys() {
+            const keysPreview = document.getElementById('keysPreview');
+            if (adminKeys.length === 0) {
+                keysPreview.innerHTML = '<p class="empty-preview">Nenhuma chave gerada</p>';
+                return;
+            }
+            keysPreview.innerHTML = adminKeys.map(keyObj => `
+                <div class="preview-item">
+                    <div class="preview-item-info">
+                        <div class="preview-item-name">👤 ${keyObj.name}</div>
+                        <div class="preview-item-key" style="color: #ffa500; font-family: monospace; font-size: 11px; margin: 5px 0;">${keyObj.key}</div>
+                        <div class="preview-item-date">📅 ${keyObj.createdAt}</div>
+                        <div class="preview-item-status ${!keyObj.active ? 'inactive' : ''}">
+                            ${keyObj.active ? '✅ Ativa' : '⛔ Desativada'}
+                        </div>
+                        <div class="preview-item-actions">
+                            <button class="toggle-btn ${keyObj.active ? 'active' : ''}" onclick="toggleKeyStatus(${keyObj.id})" style="margin-bottom: 5px;">
+                                ${keyObj.active ? 'Desativar' : 'Ativar'}
+                            </button>
+                            <button class="preview-delete-btn" onclick="deleteAccessKey(${keyObj.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderOrders() {
+            const ordersPreview = document.getElementById('ordersPreview');
+            if (ordersList.length === 0) {
+                ordersPreview.innerHTML = '<p class="empty-preview">Nenhum pedido realizado</p>';
+                return;
+            }
+            ordersPreview.innerHTML = ordersList.map(order => `
+                <div class="preview-item">
+                    <div class="preview-item-info">
+                        <div class="preview-item-name">🎮 Steam: ${order.steamId}</div>
+                        <div class="preview-item-date">📅 ${order.date}</div>
+                        <div style="color: #00ff00; font-weight: bold; font-size: 11px; margin: 5px 0;">Itens: ${order.items.length}</div>
+                        <div class="preview-item-price">Total: R$ ${order.total.toFixed(2)}</div>
+                        <div style="color: #aaa; font-size: 10px; margin-top: 5px; max-height: 60px; overflow-y: auto;">
+                            ${order.items.map(item => `• ${item.name} (x${item.quantity})`).join('<br>')}
+                        </div>
+                        <div class="preview-item-status" style="margin-top: 8px; cursor: pointer;" onclick="copyOrderDetails('${order.steamId}', '${order.items.map(i => i.name + ' x' + i.quantity).join(', ')}')">
+                            📋 Copiar Info
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyOrderDetails(steamId, items) {
+            const details = `Steam ID: ${steamId}\nItens: ${items}`;
+            navigator.clipboard.writeText(details).then(() => showNotification('Detalhes copiados! 📋'));
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            currentAdminName = '';
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminName');
+            document.getElementById('adminHeaderBtn').style.display = 'block';
+            toggleAdmin();
+            showNotification('Logout realizado! 🔒');
+        }
+
+        // Carrega dados do localStorage
+        function loadAllData() {
+            try {
+                const loggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+                isAdminLoggedIn = loggedIn;
+                currentAdminName = localStorage.getItem('adminName') || '';
+
+                webhookUrl = localStorage.getItem('webhookUrl') || '';
+                if (webhookUrl) document.getElementById('webhookUrl').value = webhookUrl;
+
+                const keysStored = localStorage.getItem('adminKeys');
+                if (keysStored) adminKeys = JSON.parse(keysStored);
+
+                const ordersStored = localStorage.getItem('ordersList');
+                if (ordersStored) ordersList = JSON.parse(ordersStored);
+
+                const stored = localStorage.getItem('uploadedImages');
+                if (stored) uploadedImages = JSON.parse(stored);
+                renderImages();
+
+                const vipStored = localStorage.getItem('vipImages');
+                if (vipStored) vipImages = JSON.parse(vipStored);
+                renderVipPreview();
+                loadVipsShop();
+
+                const basesStored = localStorage.getItem('basesList');
+                if (basesStored) basesList = JSON.parse(basesStored);
+                renderBasesPreview();
+                loadBasesShop();
+
+                const vehiclesStored = localStorage.getItem('vehiclesList');
+                if (vehiclesStored) vehiclesList = JSON.parse(vehiclesStored);
+                renderVehiclesPreview();
+                loadVehiclesShop();
+
+                const eventsStored = localStorage.getItem('eventsList');
+                if (eventsStored) eventsList = JSON.parse(eventsStored);
+                renderEventsPreview();
+                loadEventsShop();
+
+                if (isAdminLoggedIn) {
+                    document.getElementById('adminNameDisplay').textContent = currentAdminName;
+                    document.getElementById('adminHeaderBtn').style.display = 'block';
+                    renderAccessKeys();
+                    renderOrders();
+                } else {
+                    document.getElementById('adminHeaderBtn').style.display = 'block';
+                }
+            } catch (e) {
+                console.error('Erro ao carregar:', e);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAllData);
+        } else {
+            loadAllData();
+        }
+
+        function toggleAdmin() {
+            if (!isAdminLoggedIn) {
+                openLoginAdmin();
+                return;
+            }
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('active');
+        }
+
+        function switchAdminTab(tabName, event) {
+            event.preventDefault();
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').style.background = 'rgba(255, 165, 0, 0.3)';
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').style.background = 'rgba(255, 165, 0, 0.1)';
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').style.background = 'rgba(255, 165, 0, 0.1)';
+            if (e.dataTransfer.files.length > 0) {
+                handleImageUpload({ target: { files: e.dataTransfer.files } });
+            }
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const imageData = { id: Date.now(), name: file.name, url: evt.target.result };
+                uploadedImages.push(imageData);
+                localStorage.setItem('uploadedImages', JSON.stringify(uploadedImages));
+                renderImages();
+                showNotification(`"${file.name}" enviado! ✅`);
+                document.getElementById('imageInput').value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderImages() {
+            const grid = document.getElementById('imagesGrid');
+            if (uploadedImages.length === 0) {
+                grid.innerHTML = '<p class="empty-message">Nenhuma imagem</p>';
+                return;
+            }
+            grid.innerHTML = uploadedImages.map(img => `
+                <div class="image-item">
+                    <img src="${img.url}" class="image-thumbnail" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                    <div class="image-info">
+                        <div class="image-name">${img.name}</div>
+                        <div class="image-actions">
+                            <button class="copy-btn" onclick="copyToClipboard('${img.url.replace(/'/g, "\\'")}')">Copiar</button>
+                            <button class="delete-btn" onclick="deleteImage(${img.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyToClipboard(url) {
+            navigator.clipboard.writeText(url).then(() => showNotification('URL copiada! 📋'));
+        }
+
+        function deleteImage(id) {
+            uploadedImages = uploadedImages.filter(img => img.id != id);
+            localStorage.setItem('uploadedImages', JSON.stringify(uploadedImages));
+            renderImages();
+            showNotification('Imagem deletada! 🗑️');
+        }
+
+        function saveVipImage(vipNum) {
+            const fileInput = document.getElementById(`vip${vipNum}Img`);
+            const file = fileInput.files[0];
+            if (!file) {
+                showNotification('Selecione uma imagem! ⚠️');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                vipImages[`vip${vipNum}`] = evt.target.result;
+                localStorage.setItem('vipImages', JSON.stringify(vipImages));
+                fileInput.value = '';
+                renderVipPreview();
+                loadVipsShop();
+                showNotification(`VIP ${vipNum} atualizado! ✅`);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderVipPreview() {
+            const preview = document.getElementById('vipPreview');
+            if (Object.keys(vipImages).length === 0) {
+                preview.innerHTML = '<p class="empty-preview">Nenhum VIP configurado</p>';
+                return;
+            }
+            preview.innerHTML = Object.entries(vipImages).map(([key, url]) => {
+                const vipNum = key.replace('vip', '');
+                return `
+                    <div class="preview-item">
+                        <img src="${url}" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                        <div class="preview-item-info">
+                            <div class="preview-item-name">VIP ${vipNum}</div>
+                            <div class="preview-item-actions">
+                                <button class="preview-delete-btn" onclick="deleteVipImage('${key}')">Deletar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteVipImage(key) {
+            delete vipImages[key];
+            localStorage.setItem('vipImages', JSON.stringify(vipImages));
+            renderVipPreview();
+            loadVipsShop();
+            showNotification('VIP deletado! 🗑️');
+        }
+
+        function addBase() {
+            const name = document.getElementById('baseName').value;
+            const fileInput = document.getElementById('baseImg');
+            const file = fileInput.files[0];
+            const price = parseFloat(document.getElementById('basePrice').value);
+
+            if (!name || !file || !price) {
+                showNotification('Preencha todos os campos! ⚠️');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                basesList.push({ id: Date.now(), name, img: evt.target.result, price });
+                localStorage.setItem('basesList', JSON.stringify(basesList));
+                document.getElementById('baseName').value = '';
+                fileInput.value = '';
+                document.getElementById('basePrice').value = '';
+                renderBasesPreview();
+                loadBasesShop();
+                showNotification(`"${name}" adicionada! ✅`);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderBasesPreview() {
+            const preview = document.getElementById('basesPreview');
+            if (basesList.length === 0) {
+                preview.innerHTML = '<p class="empty-preview">Nenhuma base</p>';
+                return;
+            }
+            preview.innerHTML = basesList.map(base => `
+                <div class="preview-item">
+                    <img src="${base.img}" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                    <div class="preview-item-info">
+                        <div class="preview-item-name">${base.name}</div>
+                        <div class="preview-item-price">R$ ${base.price.toFixed(2)}</div>
+                        <div class="preview-item-actions">
+                            <button class="preview-delete-btn" onclick="deleteBase(${base.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteBase(id) {
+            basesList = basesList.filter(b => b.id !== id);
+            localStorage.setItem('basesList', JSON.stringify(basesList));
+            renderBasesPreview();
+            loadBasesShop();
+            showNotification('Base deletada! 🗑️');
+        }
+
+        function addVehicle() {
+            const name = document.getElementById('vehicleName').value;
+            const fileInput = document.getElementById('vehicleImg');
+            const file = fileInput.files[0];
+            const price = parseFloat(document.getElementById('vehiclePrice').value);
+            const type = document.getElementById('vehicleType').value;
+
+            if (!name || !file || !price) {
+                showNotification('Preencha todos os campos! ⚠️');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                vehiclesList.push({ id: Date.now(), name, img: evt.target.result, price, type });
+                localStorage.setItem('vehiclesList', JSON.stringify(vehiclesList));
+                document.getElementById('vehicleName').value = '';
+                fileInput.value = '';
+                document.getElementById('vehiclePrice').value = '';
+                renderVehiclesPreview();
+                loadVehiclesShop();
+                showNotification(`"${name}" adicionado! ✅`);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderVehiclesPreview() {
+            const preview = document.getElementById('vehiclesPreview');
+            if (vehiclesList.length === 0) {
+                preview.innerHTML = '<p class="empty-preview">Nenhum veículo</p>';
+                return;
+            }
+            preview.innerHTML = vehiclesList.map(vehicle => `
+                <div class="preview-item">
+                    <img src="${vehicle.img}" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                    <div class="preview-item-info">
+                        <div class="preview-item-name">${vehicle.name}</div>
+                        <div class="preview-item-price">R$ ${vehicle.price.toFixed(2)}</div>
+                        <div class="preview-item-actions">
+                            <button class="preview-delete-btn" onclick="deleteVehicle(${vehicle.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteVehicle(id) {
+            vehiclesList = vehiclesList.filter(v => v.id !== id);
+            localStorage.setItem('vehiclesList', JSON.stringify(vehiclesList));
+            renderVehiclesPreview();
+            loadVehiclesShop();
+            showNotification('Veículo deletado! 🗑️');
+        }
+
+        function addEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            const description = document.getElementById('eventDescription').value;
+            const reward = document.getElementById('eventReward').value;
+            const icon = document.getElementById('eventIcon').value || '🎮';
+            const fileInput = document.getElementById('eventImage');
+            const file = fileInput.files[0];
+
+            if (!title || !date || !time || !description || !reward) {
+                showNotification('Preencha todos os campos obrigatórios! ⚠️');
+                return;
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    eventsList.push({ id: Date.now(), title, date, time, description, reward, icon, image: evt.target.result });
+                    localStorage.setItem('eventsList', JSON.stringify(eventsList));
+                    document.getElementById('eventTitle').value = '';
+                    document.getElementById('eventDate').value = '';
+                    document.getElementById('eventTime').value = '';
+                    document.getElementById('eventDescription').value = '';
+                    document.getElementById('eventReward').value = '';
+                    document.getElementById('eventIcon').value = '';
+                    fileInput.value = '';
+                    renderEventsPreview();
+                    loadEventsShop();
+                    showNotification(`"${title}" adicionado! ✅`);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                eventsList.push({ id: Date.now(), title, date, time, description, reward, icon, image: '' });
+                localStorage.setItem('eventsList', JSON.stringify(eventsList));
+                document.getElementById('eventTitle').value = '';
+                document.getElementById('eventDate').value = '';
+                document.getElementById('eventTime').value = '';
+                document.getElementById('eventDescription').value = '';
+                document.getElementById('eventReward').value = '';
+                document.getElementById('eventIcon').value = '';
+                renderEventsPreview();
+                loadEventsShop();
+                showNotification(`"${title}" adicionado! ✅`);
+            }
+        }
+
+        function renderEventsPreview() {
+            const preview = document.getElementById('eventsPreview');
+            if (eventsList.length === 0) {
+                preview.innerHTML = '<p class="empty-preview">Nenhum evento</p>';
+                return;
+            }
+            preview.innerHTML = eventsList.map(event => `
+                <div class="preview-item">
+                    ${event.image ? `<img src="${event.image}" loading="lazy" onerror="this.style.background='#e5e7eb'">` : ''}
+                    <div class="preview-item-info">
+                        <div class="event-icon">${event.icon}</div>
+                        <div class="preview-item-name">${event.title}</div>
+                        <div class="event-date">${event.date}</div>
+                        <div class="event-time">${event.time}</div>
+                        <div class="event-reward">🏆 ${event.reward}</div>
+                        <div class="preview-item-actions">
+                            <button class="preview-delete-btn" onclick="deleteEvent(${event.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteEvent(id) {
+            eventsList = eventsList.filter(e => e.id !== id);
+            localStorage.setItem('eventsList', JSON.stringify(eventsList));
+            renderEventsPreview();
+            loadEventsShop();
+            showNotification('Evento deletado! 🗑️');
+        }
+
+        function loadEventsShop() {
+            const container = document.getElementById('eventsContainer');
+            if (eventsList.length === 0) {
+                container.innerHTML = '<p class="empty-message">Nenhum evento anunciado ainda</p>';
+                return;
+            }
+            container.innerHTML = eventsList.map(event => `
+                <div class="event-card">
+                    ${event.image ? `<img src="${event.image}" class="event-image" loading="lazy" onerror="this.style.background='#e5e7eb'">` : ''}
+                    <div class="event-icon">${event.icon}</div>
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-date">📅 ${event.date}</div>
+                    <div class="event-time">🕐 ${event.time}</div>
+                    <div class="event-description">${event.description}</div>
+                    <div class="event-reward">🏆 Prêmio: ${event.reward}</div>
+                    <div class="event-participants">Max de participantes: Ilimitado</div>
+                </div>
+            `).join('');
+        }
+
+        function loadVipsShop() {
+            const vipsShop = document.getElementById('vipsShop');
+            const defaultVips = [
+                { 
+                    name: 'VIP 1', 
+                    price: 15.00, 
+                    img: vipImages.vip1 || 'https://imgur.com/c5gUYi8.jpg',
+                    benefits: [
+                        'Helmet 75%',
+                        'Jaqueta 42 slots',
+                        'JPC Vest 73%',
+                        'Cinto 8 slots',
+                        'Calça 42 slots',
+                        'Mochila Rush 100 slots',
+                        '1 IFAK',
+                        '1.000.000 Ruble no Banco',
+                        '1 BMW na Garagem'
+                    ]
+                },
+                { 
+                    name: 'VIP 2', 
+                    price: 30.00, 
+                    img: vipImages.vip2 || 'https://imgur.com/adKllBg.jpg',
+                    benefits: [
+                        'Helmet 78%',
+                        'Jaqueta 42 slots',
+                        'Light DCS Vest 76%',
+                        'Cinto 16 slots',
+                        'Calça 42 slots',
+                        'Mochila Compact 100 slots',
+                        '1 IFAK',
+                        '5.000.000 Ruble no Banco',
+                        '1 BMW na Garagem',
+                        '1 Heli R22 na Garagem',
+                        'Acesso à loja VIP com skins'
+                    ]
+                },
+                { 
+                    name: 'VIP 3', 
+                    price: 50.00, 
+                    img: vipImages.vip3 || 'https://imgur.com/5VwIzu6.jpg',
+                    benefits: [
+                        'Helmet 81%',
+                        'Jaqueta 42 slots',
+                        'Light TacTec Vest 80%',
+                        'Cinto 25 slots',
+                        'Calça 42 slots',
+                        'Mochila Tactical 130 slots',
+                        '2 IFAK',
+                        '10.000.000 Ruble no Banco',
+                        '2 BMW na Garagem',
+                        '1 Heli R22 na Garagem',
+                        '1 Heli Little Bird',
+                        'Spawn Select Especial',
+                        'Acesso à loja VIP com skins'
+                    ]
+                }
+            ];
+            vipsShop.innerHTML = defaultVips.map((vip, i) => `
+                <div class="product-card">
+                    <img src="${vip.img}" class="product-image" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                    <div class="product-name">${vip.name}</div>
+                    <div class="product-price">R$ ${vip.price.toFixed(2)}</div>
+                    <div class="product-benefits">
+                        <ul>
+                            ${vip.benefits.map(b => `<li>${b}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('${vip.name}', ${vip.price}, '${vip.img.replace(/'/g, "\\'")}')" >Adicionar</button>
+                </div>
+            `).join('');
+        }
+
+        function loadBasesShop() {
+            const basesShop = document.getElementById('basesShop');
+            const defaultBases = [
+                { name: 'Base Pequena 07', price: 30.00, type: 'Mensal', img: '' },
+                { name: 'Base Média 07', price: 50.00, type: 'Mensal', img: '' },
+                { name: 'Base Média 04', price: 50.00, type: 'Mensal', img: '' },
+                { name: 'Base Média 02', price: 50.00, type: 'Mensal', img: '' },
+                { name: 'Base Castelo 06', price: 70.00, type: 'Mensal', img: '' },
+                { name: 'Base Heliponto', price: 70.00, type: 'Mensal', img: '' },
+                { name: 'Base Grande 05', price: 70.00, type: 'Mensal', img: '' },
+                { name: 'Base Camuflada 08 e 09', price: 70.00, type: 'Mensal', img: '' },
+                { name: 'Base Heliponto 03', price: 100.00, type: 'Mensal', img: '' },
+                { name: 'Base Heliponto 00', price: 130.00, type: 'Mensal', img: '' },
+                { name: 'Papel de parede BBP', price: 10.00, type: 'Unidade', img: '' },
+                { name: 'Bandeira', price: 10.00, type: 'Unidade', img: '' },
+                { name: 'Cassete de Música', price: 5.00, type: 'Unidade', img: '' }
+            ];
+            const allBases = [...defaultBases, ...basesList];
+            basesShop.innerHTML = allBases.map(base => `
+                <div class="product-card">
+                    <img src="${base.img || 'https://imgur.com/placeholder.jpg'}" class="product-image" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                    <div class="product-name">${base.name}</div>
+                    <div class="product-price">R$ ${base.price.toFixed(2)}</div>
+                    <div class="product-benefits">
+                        <ul>
+                            <li>🏰 ${base.type}</li>
+                        </ul>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('${base.name}', ${base.price}, '${(base.img || 'https://imgur.com/placeholder.jpg').replace(/'/g, "\\'")}')" >Adicionar</button>
+                </div>
+            `).join('');
+        }
+
+        function loadVehiclesShop() {
+            const vehiclesShop = document.getElementById('vehiclesShop');
+            const defaultVehicles = [
+                { name: 'Blindado', price: 50.00, type: 'Unidade', img: '' },
+                { name: 'Heli com Skin', price: 30.00, type: 'Unidade', img: '' }
+            ];
+            const allVehicles = [...defaultVehicles, ...vehiclesList];
+            vehiclesShop.innerHTML = allVehicles.map(vehicle => `
+                <div class="product-card">
+                    <img src="${vehicle.img || 'https://imgur.com/placeholder.jpg'}" class="product-image" loading="lazy" onerror="this.style.background='#e5e7eb'">
+                    <div class="product-name">${vehicle.name}</div>
+                    <div class="product-price">R$ ${vehicle.price.toFixed(2)}</div>
+                    <div class="product-benefits">
+                        <ul>
+                            <li>📦 ${vehicle.type}</li>
+                        </ul>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('${vehicle.name}', ${vehicle.price}, '${(vehicle.img || 'https://imgur.com/placeholder.jpg').replace(/'/g, "\\'")}')" >Adicionar</button>
+                </div>
+            `).join('');
+        }
+
+        function switchShopTab(tabName, e) {
+            e.preventDefault();
+            document.querySelectorAll('.shop-tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.shop-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+
+        function openShop() {
+            document.getElementById('shopModal').classList.add('active');
+        }
+
+        function closeShop() {
+            document.getElementById('shopModal').classList.remove('active');
+        }
+
+        function addToCart(name, price, img) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({ name: name, price: price, quantity: 1, img: img || '' });
+            }
+            updateCart();
+            showNotification(`${name} adicionado! 🛒`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                updateCart();
+            }
+        }
+
+        function updateCart() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartBadge = document.getElementById('cartBadge');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<div class="cart-empty">Carrinho vazio</div>';
+                cartBadge.textContent = '0';
+                checkoutBtn.disabled = true;
+            } else {
+                let total = 0;
+                cartItemsDiv.innerHTML = cart.map((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    const imgHtml = item.img ? `<img src="${item.img}" class="cart-item-image" loading="lazy" onerror="this.style.background='#e5e7eb'">` : '';
+                    return `
+                        <div class="cart-item">
+                            ${imgHtml}
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">R$ ${item.price.toFixed(2)}</div>
+                            </div>
+                            <div class="cart-item-controls">
+                                <div class="cart-item-quantity">
+                                    <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                                <button class="remove-btn" onclick="removeFromCart(${index})">✕</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('cartTotal').textContent = `R$ ${total.toFixed(2)}`;
+                cartBadge.textContent = cart.length;
+                checkoutBtn.disabled = false;
+            }
+        }
+
+        function initiateCheckout() {
+            if (cart.length === 0) {
+                showNotification('Carrinho vazio! ⚠️');
+                return;
+            }
+
+            const steamId = document.getElementById('steamIdInput').value.trim();
+            if (!steamId) {
+                showNotification('Digite seu Steam ID! ⚠️');
+                return;
+            }
+
+            if (steamId.length < 17 || steamId.length > 20) {
+                showNotification('Steam ID inválido! Deve conter 17-20 caracteres. ⚠️');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            pendingCheckoutData = {
+                steamId: steamId,
+                items: JSON.parse(JSON.stringify(cart)),
+                total: total,
+                date: new Date().toLocaleDateString('pt-BR'),
+                time: new Date().toLocaleTimeString('pt-BR')
+            };
+
+            document.getElementById('confirmSteamId').textContent = steamId;
+            document.getElementById('confirmItems').textContent = cart.length;
+            document.getElementById('confirmTotal').textContent = `R$ ${total.toFixed(2)}`;
+
+            document.getElementById('orderConfirmationModal').classList.add('active');
+        }
+
+        function confirmCheckout() {
+            if (!pendingCheckoutData) return;
+
+            ordersList.push(pendingCheckoutData);
+            localStorage.setItem('ordersList', JSON.stringify(ordersList));
+
+            sendOrderToDiscord(pendingCheckoutData);
+
+            if (isAdminLoggedIn) {
+                renderOrders();
+            }
+
+            showNotification(`Pedido confirmado! 🎉 Steam ID: ${pendingCheckoutData.steamId}`);
+            document.getElementById('orderConfirmationModal').classList.remove('active');
+            clearCart();
+            document.getElementById('steamIdInput').value = '';
+            closeShop();
+            pendingCheckoutData = null;
+        }
+
+        function cancelCheckout() {
+            document.getElementById('orderConfirmationModal').classList.remove('active');
+            pendingCheckoutData = null;
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCart();
+        }
+
+        function showNotification(msg) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = msg;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        document.getElementById('shopModal').addEventListener('click', function(e) {
+            if (e.target === this) closeShop();
+        });
+
+        document.getElementById('adminPanel').addEventListener('click', function(e) {
+            if (e.target === this && isAdminLoggedIn) toggleAdmin();
+        });
+
+        document.getElementById('loginOverlay').addEventListener('click', function(e) {
+            if (e.target === this) document.getElementById('loginOverlay').classList.remove('active');
+        });
+
+        document.getElementById('orderConfirmationModal').addEventListener('click', function(e) {
+            if (e.target === this) cancelCheckout();
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ce392fe4524f1c1',t:'MTc3MTE0NTYwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
