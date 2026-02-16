@@ -2742,7 +2742,6 @@
                 { name: 'Base Heliponto 00', price: 130.00, type: 'Mensal', img: '' },
                 { name: 'Papel de parede BBP', price: 10.00, type: 'Unidade', img: '' },
                 { name: 'Bandeira', price: 10.00, type: 'Unidade', img: '' },
-                { name: 'Cassete de Música', price: 5.00, type: 'Unidade', img: '' }
             ];
             const allBases = [...defaultBases, ...basesList];
             basesShop.innerHTML = allBases.map(base => `
@@ -2763,6 +2762,7 @@
         function loadVehiclesShop() {
             const vehiclesShop = document.getElementById('vehiclesShop');
             const defaultVehicles = [
+                { name: 'Cassete de Música', price: 5.00, type: 'Unidade', img: '' }
                 { name: 'Blindado', price: 50.00, type: 'Unidade', img: '' },
                 { name: 'Heli com Skin', price: 30.00, type: 'Unidade', img: '' }
             ];
@@ -2951,4 +2951,5 @@
         });
     </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ce392fe4524f1c1',t:'MTc3MTE0NTYwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
 </html>
